@@ -53,24 +53,27 @@ var l *log.Logger = log.New(os.Stderr, "", 0)
 
 type Session struct {
 	milter.NoOpMilter
+	QueueID string
+	Login   string
 }
 
 func (s *Session) MailFrom(from string, m *milter.Modifier) (milter.Response, error) {
+	s.QueueID = m.Macros["i"]
+
 	// Only process mails from authenticated clients, e.g. SASL authenticated in Postfix.
-	if m.Macros["{auth_authen}"] != "" {
+	if login := m.Macros["{auth_authen}"]; login != "" {
+		s.Login = login
 		return milter.RespContinue, nil
 	}
 	return milter.RespAccept, nil
 }
 
 func (s *Session) Body(m *milter.Modifier) (milter.Response, error) {
-	queueID := m.Macros["i"]
-	login := m.Macros["{auth_authen}"]
 	results := []authres.Result{
-		&authres.AuthResult{Value: authres.ResultPass, Auth: login},
+		&authres.AuthResult{Value: authres.ResultPass, Auth: s.Login},
 	}
 	m.InsertHeader(0, "Authentication-Results", authres.Format(conf.AuthservID, results))
-	l.Printf("%s: Authentication-Results field added", queueID)
+	l.Printf("%s: Authentication-Results field added", s.QueueID)
 	return milter.RespAccept, nil
 }
 
