@@ -87,15 +87,32 @@ func readListener(t *testing.T, r io.Reader) string {
 	return ""
 }
 
-func TestBasic(t *testing.T) {
+func TestMacros(t *testing.T) {
+	cases := []struct {
+		name     string
+		macros   []string
+		expected string
+	}{
+		{
+			name:     "basic",
+			macros:   []string{"{auth_authen}", "nicolas@club1.fr"},
+			expected: "mail.club1.fr; auth=pass smtp.auth=nicolas@club1.fr",
+		},
+		{
+			name:     "login name is not an address",
+			macros:   []string{"{auth_authen}", "nicolas"},
+			expected: "mail.club1.fr; auth=pass smtp.auth=nicolas",
+		},
+	}
 	config := `
 ListenURI = "tcp://127.0.0.1:"
 AuthservID = "mail.club1.fr"
 `
-	macros := []string{"{auth_authen}", "nicolas@club1.fr"}
-	expectedAct := &milter.Action{Code: milter.ActAccept}
-	expectedField := "mail.club1.fr; auth=pass smtp.auth=nicolas@club1.fr"
-	testMacros(t, config, macros, expectedAct, expectedField, "Authentication-Results field added")
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			testMacros(t, config, c.macros, c.expected, "Authentication-Results field added")
+		})
+	}
 }
 
 func TestConfigNoAuthservID(t *testing.T) {
@@ -107,9 +124,8 @@ ListenURI = "tcp://127.0.0.1:"
 	if err != nil {
 		t.Fatal("unexpected error: ", err)
 	}
-	expectedAct := &milter.Action{Code: milter.ActAccept}
 	expectedField := hostname + "; auth=pass smtp.auth=nicolas@club1.fr"
-	testMacros(t, config, macros, expectedAct, expectedField, "Authentication-Results field added")
+	testMacros(t, config, macros, expectedField, "Authentication-Results field added")
 }
 
 func TestUNIXSocket(t *testing.T) {
@@ -118,12 +134,11 @@ ListenURI = "unix:///tmp/homard.sock"
 AuthservID = "mail.club1.fr"
 `
 	macros := []string{"{auth_authen}", "nicolas@club1.fr"}
-	expectedAct := &milter.Action{Code: milter.ActAccept}
 	expectedField := "mail.club1.fr; auth=pass smtp.auth=nicolas@club1.fr"
-	testMacros(t, config, macros, expectedAct, expectedField, "Authentication-Results field added")
+	testMacros(t, config, macros, expectedField, "Authentication-Results field added")
 }
 
-func testMacros(t *testing.T, config string, macros []string, expectedAct *milter.Action, expectedField string, expectedOut ...string) {
+func testMacros(t *testing.T, config string, macros []string, expectedField string, expectedOut ...string) {
 	if len(macros)%2 != 0 {
 		panic("macros varargs must be pairs")
 	}
@@ -172,8 +187,9 @@ func testMacros(t *testing.T, config string, macros []string, expectedAct *milte
 	if err != nil {
 		t.Error("unexpected err sending EOB: ", err)
 	}
-	if !reflect.DeepEqual(res, expectedAct) {
-		t.Errorf("expected %#v, got %#v", expectedAct, res)
+	acceptAct := &milter.Action{Code: milter.ActAccept}
+	if !reflect.DeepEqual(res, acceptAct) {
+		t.Errorf("expected %#v, got %#v", acceptAct, res)
 	}
 	switch {
 	case len(mods) != 1:
