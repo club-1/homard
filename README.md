@@ -17,8 +17,11 @@ such as FairEmail, that use it to display the authentication status of a
 mail.
 
 To fix this issue, homard adds a SMTP AUTH `Authentication-Results` field
-to the header of mails sent by authenticated client. This is usually enough
-for MUAs to consider the mail as fully authenticated (as it is).
+as described by [RFC7601 § 2.7.4] to the header of mails sent by authenticated
+clients. This is usually enough for MUAs to consider the mail as fully
+authenticated (as it is).
+
+[RFC7601 § 2.7.4]: https://datatracker.ietf.org/doc/html/rfc7601#section-2.7.4
 
 Configuration with Postfix on Debian
 ------------------------------------
