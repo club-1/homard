@@ -57,7 +57,7 @@ type Session struct {
 
 func (s *Session) MailFrom(from string, m *milter.Modifier) (milter.Response, error) {
 	// Only process mails from authenticated clients, e.g. SASL authenticated in Postfix.
-	if m.Macros["{auth_author}"] != "" {
+	if m.Macros["{auth_authen}"] != "" {
 		return milter.RespContinue, nil
 	}
 	return milter.RespAccept, nil
@@ -65,9 +65,9 @@ func (s *Session) MailFrom(from string, m *milter.Modifier) (milter.Response, er
 
 func (s *Session) Body(m *milter.Modifier) (milter.Response, error) {
 	queueID := m.Macros["i"]
-	sender := m.Macros["{auth_author}"]
+	login := m.Macros["{auth_authen}"]
 	results := []authres.Result{
-		&authres.AuthResult{Value: authres.ResultPass, Auth: sender},
+		&authres.AuthResult{Value: authres.ResultPass, Auth: login},
 	}
 	m.AddHeader("Authentication-Results", authres.Format(conf.AuthservID, results))
 	l.Printf("%s: Authentication-Results field added", queueID)

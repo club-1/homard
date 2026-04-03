@@ -92,22 +92,24 @@ func TestBasic(t *testing.T) {
 ListenURI = "tcp://127.0.0.1:"
 AuthservID = "mail.club1.fr"
 `
+	macros := []string{"{auth_authen}", "nicolas@club1.fr"}
 	expectedAct := &milter.Action{Code: milter.ActAccept}
 	expectedField := "mail.club1.fr; auth=pass smtp.auth=nicolas@club1.fr"
-	testResults(t, config, expectedAct, expectedField, "Authentication-Results field added")
+	testMacros(t, config, macros, expectedAct, expectedField, "Authentication-Results field added")
 }
 
 func TestConfigNoAuthservID(t *testing.T) {
 	config := `
 ListenURI = "tcp://127.0.0.1:"
 `
+	macros := []string{"{auth_authen}", "nicolas@club1.fr"}
 	hostname, err := os.Hostname()
 	if err != nil {
 		t.Fatal("unexpected error: ", err)
 	}
 	expectedAct := &milter.Action{Code: milter.ActAccept}
 	expectedField := hostname + "; auth=pass smtp.auth=nicolas@club1.fr"
-	testResults(t, config, expectedAct, expectedField, "Authentication-Results field added")
+	testMacros(t, config, macros, expectedAct, expectedField, "Authentication-Results field added")
 }
 
 func TestUNIXSocket(t *testing.T) {
@@ -115,12 +117,16 @@ func TestUNIXSocket(t *testing.T) {
 ListenURI = "unix:///tmp/homard.sock"
 AuthservID = "mail.club1.fr"
 `
+	macros := []string{"{auth_authen}", "nicolas@club1.fr"}
 	expectedAct := &milter.Action{Code: milter.ActAccept}
 	expectedField := "mail.club1.fr; auth=pass smtp.auth=nicolas@club1.fr"
-	testResults(t, config, expectedAct, expectedField, "Authentication-Results field added")
+	testMacros(t, config, macros, expectedAct, expectedField, "Authentication-Results field added")
 }
 
-func testResults(t *testing.T, config string, expectedAct *milter.Action, expectedField string, expectedOut ...string) {
+func testMacros(t *testing.T, config string, macros []string, expectedAct *milter.Action, expectedField string, expectedOut ...string) {
+	if len(macros)%2 != 0 {
+		panic("macros varargs must be pairs")
+	}
 	network, address, out := setup(t, config)
 
 	client := milter.NewClientWithOptions(network, address, milter.ClientOptions{
@@ -136,8 +142,7 @@ func testResults(t *testing.T, config string, expectedAct *milter.Action, expect
 	// Send a dummy MAIL FROM, with an authentication macro.
 	fromAddr := "nicolas@example.fr"
 	err = session.Macros(milter.CodeMail,
-		"i", "QUEUEID",
-		"{auth_author}", "nicolas@club1.fr",
+		append(macros, "i", "QUEUEID")...,
 	)
 	if err != nil {
 		t.Fatal("unexpected err setting macros: ", err)
