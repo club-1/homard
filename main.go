@@ -60,9 +60,16 @@ type Session struct {
 func (s *Session) MailFrom(from string, m *milter.Modifier) (milter.Response, error) {
 	s.QueueID = m.Macros["i"]
 
-	// Only process mails from authenticated clients, e.g. SASL authenticated in Postfix.
+	// Process mails from authenticated clients, e.g. SASL authenticated
+	// in Postfix.
 	if login := m.Macros["{auth_authen}"]; login != "" {
 		s.Login = login
+		return milter.RespContinue, nil
+	}
+	// When new mail arrives via the sendmail(1) command line, the Postfix
+	// cleanup(8) server pretends that the mail arrives with ESMTP from
+	// "localhost" with IP address "127.0.0.1".
+	if m.Macros["{client_addr}"] == "127.0.0.1" {
 		return milter.RespContinue, nil
 	}
 	return milter.RespAccept, nil
@@ -143,7 +150,11 @@ func main() {
 		NewMilter: func() milter.Milter {
 			return &Session{}
 		},
+		Actions:  milter.OptSetSymList,
 		Protocol: milter.OptNoConnect | milter.OptNoHelo | milter.OptNoRcptTo | milter.OptNoHeaders | milter.OptNoBody,
+		SymList: map[milter.Stage]string{
+			milter.StageMailFrom: "i {auth_authen} {client_addr}",
+		},
 	}
 
 	// Allows to set the permissions of the created unix socket
