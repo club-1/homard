@@ -1,5 +1,5 @@
-homard
-======
+🦞 homard
+=========
 
 [![build][build-svg]][build-url] [![coverage][cover-svg]][cover-url]
 
@@ -71,6 +71,13 @@ Add postfix to the homard group:
 And finally restart both services:
 
     sudo systemctl restart postfix homard
+
+About the name
+--------------
+
+The name kind of means HOMe Authentication-Results Daemon, but it was mostly
+chosen because it means "lobster" in French and ends with "ard".
+
 
 [build-svg]: https://github.com/club-1/homard/actions/workflows/build.yml/badge.svg
 [build-url]: https://github.com/club-1/homard/actions/workflows/build.yml
