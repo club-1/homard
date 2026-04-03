@@ -103,6 +103,11 @@ func TestMacros(t *testing.T) {
 			macros:   []string{"{auth_authen}", "nicolas"},
 			expected: "mail.club1.fr; auth=pass smtp.auth=nicolas",
 		},
+		{
+			name:     "localhost not sasl authenticated",
+			macros:   []string{"{client_addr}", "127.0.0.1"},
+			expected: "mail.club1.fr; auth=pass ",
+		},
 	}
 	config := `
 ListenURI = "tcp://127.0.0.1:"
