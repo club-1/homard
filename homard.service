@@ -1,0 +1,22 @@
+[Unit]
+Description=Milter to add dummy Authentication-Results to self-sent mails
+Documentation=man:homard(8)
+
+[Service]
+Type=exec
+ExecStart=/usr/sbin/homard
+Restart=on-failure
+User=homard
+RuntimeDirectory=homard
+
+# Make sure to forward logs to syslog with the correct facility
+StandardError=journal
+SyslogFacility=mail
+
+# Sandboxing an security options
+NoNewPrivileges=yes
+ProtectSystem=yes
+ProtectHome=yes
+
+[Install]
+WantedBy=multi-user.target
