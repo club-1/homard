@@ -19,9 +19,13 @@ mail.
 To fix this issue, homard adds a SMTP AUTH `Authentication-Results` field
 as described by [RFC7601 § 2.7.4] to the header of mails sent by authenticated
 clients. This is usually enough for MUAs to consider the mail as fully
-authenticated (as it is).
+authenticated (as it is)
 
 [RFC7601 § 2.7.4]: https://datatracker.ietf.org/doc/html/rfc7601#section-2.7.4
+
+<img src="https://static.club1.fr/nicolas/projects/homard/screenshot-fairemail.png" alt="fairemail screenshot" width="400px">
+
+_In this screenshot, the second mail is sent with homard whereas the first is not._
 
 Configuration with Postfix on Debian
 ------------------------------------
