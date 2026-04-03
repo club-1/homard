@@ -69,7 +69,7 @@ func (s *Session) Body(m *milter.Modifier) (milter.Response, error) {
 	results := []authres.Result{
 		&authres.AuthResult{Value: authres.ResultPass, Auth: login},
 	}
-	m.AddHeader("Authentication-Results", authres.Format(conf.AuthservID, results))
+	m.InsertHeader(0, "Authentication-Results", authres.Format(conf.AuthservID, results))
 	l.Printf("%s: Authentication-Results field added", queueID)
 	return milter.RespAccept, nil
 }

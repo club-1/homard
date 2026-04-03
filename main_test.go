@@ -178,12 +178,14 @@ func testMacros(t *testing.T, config string, macros []string, expectedAct *milte
 	switch {
 	case len(mods) != 1:
 		t.Errorf("expected 1 modification, got %v", len(mods))
-	case mods[0].Code != milter.ActAddHeader:
-		t.Errorf("expected modification code %q, got %q", milter.ActAddHeader, mods[0].Code)
+	case mods[0].Code != milter.ActInsertHeader:
+		t.Errorf("expected modification code %q, got %q", milter.ActInsertHeader, mods[0].Code)
 	case mods[0].HeaderName != "Authentication-Results":
-		t.Errorf("expected add header name %q, got %q", "Authentication-Results", mods[0].HeaderName)
+		t.Errorf("expected insert header name %q, got %q", "Authentication-Results", mods[0].HeaderName)
 	case mods[0].HeaderValue != expectedField:
-		t.Errorf("expected add header value %q, got %q", expectedField, mods[0].HeaderValue)
+		t.Errorf("expected insert header value %q, got %q", expectedField, mods[0].HeaderValue)
+	case mods[0].HeaderIndex != 0:
+		t.Errorf("expected insert header index %q, got %q", 0, mods[0].HeaderIndex)
 	default:
 		goto skiplog
 	}
