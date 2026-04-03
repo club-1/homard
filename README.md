@@ -51,6 +51,10 @@ Add homard to postfix's milters in `/etc/postfix/main.cf`:
    local:opendkim/opendkim.sock
    local:opendmarc/opendmarc.sock
 +  local:homard/homard.sock
+
+ non_smtpd_milters =
+   local:opendkim/opendkim.sock
++  local:homard/homard.sock
 ```
 
 Add postfix to the homard group:
