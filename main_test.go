@@ -151,8 +151,9 @@ func testMacros(t *testing.T, config string, macros []string, expectedAct *milte
 	if err != nil {
 		t.Fatal("unexpected err sending MAIL FROM: ", err)
 	}
-	if !reflect.DeepEqual(&milter.Action{Code: milter.ActContinue}, res) {
-		t.Errorf("expected %#v, got %#v", expectedAct, res)
+	continueAct := &milter.Action{Code: milter.ActContinue}
+	if !reflect.DeepEqual(continueAct, res) {
+		t.Errorf("expected %#v, got %#v", continueAct, res)
 	}
 	for key, val := range map[string]string{
 		"From": fromAddr,
