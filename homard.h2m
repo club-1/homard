@@ -1,5 +1,5 @@
 [NAME]
-homard - Milter to add dummy Authentication-Results to self-sent mails
+homard - Milter to add SMTP AUTH Authentication-Results to self-sent mails
 
 [AUTHOR]
 Written by Nicolas Peugnet.

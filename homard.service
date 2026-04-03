@@ -1,5 +1,5 @@
 [Unit]
-Description=Milter to add dummy Authentication-Results to self-sent mails
+Description=Milter to add SMTP AUTH Authentication-Results to self-sent mails
 Documentation=man:homard(8)
 
 [Service]

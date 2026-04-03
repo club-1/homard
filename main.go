@@ -77,7 +77,7 @@ func (s *Session) Body(m *milter.Modifier) (milter.Response, error) {
 const (
 	usageFmt = `Usage: homard [OPTION]...
 
-Milter to add dummy Authentication-Results field to self-sent mails.
+Milter to add SMTP AUTH Authentication-Results field to self-sent mails.
 
 Options:
   -c FILE       Read config from FILE. (default %q)

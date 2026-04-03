@@ -3,7 +3,7 @@ homard
 
 [![build][build-svg]][build-url] [![coverage][cover-svg]][cover-url]
 
-Milter to add dummy Authentication-Results field to self-sent mails.
+Milter to add SMTP AUTH Authentication-Results field to self-sent mails.
 
 Mails from authenticated clients will usually be processed differently by
 milters such as OpenDKIM and OpenDMARC. OpenDKIM will sign the mail instead
@@ -16,10 +16,9 @@ Having a mail without any `Authentication-Results` field can confuse MUAs
 such as FairEmail, that use it to display the authentication status of a
 mail.
 
-To fix this issue, homard adds a dummy `Authentication-Results` field for
-SPF, DKIM dnc DMARC to the header of mails sent by authenticated client.
-It is called "dummy" because SPF, DKIM and DMARC are not really verified by
-homard, their results will always be successful.
+To fix this issue, homard adds a SMTP AUTH `Authentication-Results` field
+to the header of mails sent by authenticated client. This is usually enough
+for MUAs to consider the mail as fully authenticated (as it is).
 
 Configuration with Postfix on Debian
 ------------------------------------
