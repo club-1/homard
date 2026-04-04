@@ -47,8 +47,6 @@ var conf = Conf{
 // Set by the compiler
 var version = "unknown"
 
-var rejectDomains = make(map[string]bool)
-
 var l *log.Logger = log.New(os.Stderr, "", 0)
 
 type Session struct {
