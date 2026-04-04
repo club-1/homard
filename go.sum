@@ -2,12 +2,10 @@ github.com/BurntSushi/toml v1.5.0 h1:W5quZX/G/csjUnuI8SUYlsHs9M38FC7znL0lIO+DvMg
 github.com/BurntSushi/toml v1.5.0/go.mod h1:ukJfTF/6rtPPRCnwkur4qwRxa8vTRFBF0uk2lLoLwho=
 github.com/emersion/go-message v0.18.1 h1:tfTxIoXFSFRwWaZsgnqS1DSZuGpYGzSmCZD8SK3QA2E=
 github.com/emersion/go-message v0.18.1/go.mod h1:XpJyL70LwRvq2a8rVbHXikPgKj8+aI0kGdHlg16ibYA=
-github.com/emersion/go-milter v0.4.1 h1:gLs9QD0zEHF8omgEw8M+aGz6iwBNpWLAcwgSur0ra4M=
-github.com/emersion/go-milter v0.4.1/go.mod h1:erCQVl0mH4SX9jEvwe+wyndit0rQtmvMLH86V6NGtkI=
+github.com/emersion/go-milter v0.4.2-0.20260404180714-0277691f4441 h1:ZYkSGgzHAcm5mp6Hjgn/BYHvgLrLT/5EkXCSWB73IHM=
+github.com/emersion/go-milter v0.4.2-0.20260404180714-0277691f4441/go.mod h1:erCQVl0mH4SX9jEvwe+wyndit0rQtmvMLH86V6NGtkI=
 github.com/emersion/go-msgauth v0.7.0 h1:vj2hMn6KhFtW41kshIBTXvp6KgYSqpA/ZN9Pv4g1INc=
 github.com/emersion/go-msgauth v0.7.0/go.mod h1:mmS9I6HkSovrNgq0HNXTeu8l3sRAAuQ9RMvbM4KU7Ck=
-github.com/n-peugnet/go-milter v0.4.2-0.20260403195049-88504148bc82 h1:s1TSq5F8+aPQVw9YoUwQ9XSosjvHkwruOCErTUOfumo=
-github.com/n-peugnet/go-milter v0.4.2-0.20260403195049-88504148bc82/go.mod h1:erCQVl0mH4SX9jEvwe+wyndit0rQtmvMLH86V6NGtkI=
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.0.0-20210921155107-089bfa567519/go.mod h1:GvvjBRRGRdwPK5ydBHafDWAxML/pGHZbMvKqRZ5+Abc=

@@ -152,8 +152,8 @@ func main() {
 		},
 		Actions:  milter.OptSetSymList,
 		Protocol: milter.OptNoConnect | milter.OptNoHelo | milter.OptNoRcptTo | milter.OptNoHeaders | milter.OptNoBody,
-		SymList: map[milter.Stage]string{
-			milter.StageMailFrom: "i {auth_authen} {client_addr}",
+		SymList: map[milter.Stage][]string{
+			milter.StageMailFrom: {"i", "{auth_authen}", "{client_addr}"},
 		},
 	}
 
