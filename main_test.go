@@ -87,7 +87,7 @@ func readListener(t *testing.T, r io.Reader) string {
 	return ""
 }
 
-func TestMacros(t *testing.T) {
+func TestAuthenticated(t *testing.T) {
 	cases := []struct {
 		name     string
 		macros   []string
@@ -115,7 +115,7 @@ AuthservID = "mail.club1.fr"
 `
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			testMacros(t, config, c.macros, c.expected, "Authentication-Results field added")
+			subTestAuthenticated(t, config, c.macros, c.expected, "Authentication-Results field added")
 		})
 	}
 }
@@ -130,7 +130,7 @@ ListenURI = "tcp://127.0.0.1:"
 		t.Fatal("unexpected error: ", err)
 	}
 	expectedField := hostname + "; auth=pass smtp.auth=nicolas@club1.fr"
-	testMacros(t, config, macros, expectedField, "Authentication-Results field added")
+	subTestAuthenticated(t, config, macros, expectedField, "Authentication-Results field added")
 }
 
 func TestUNIXSocket(t *testing.T) {
@@ -140,10 +140,10 @@ AuthservID = "mail.club1.fr"
 `
 	macros := []string{"{auth_authen}", "nicolas@club1.fr"}
 	expectedField := "mail.club1.fr; auth=pass smtp.auth=nicolas@club1.fr"
-	testMacros(t, config, macros, expectedField, "Authentication-Results field added")
+	subTestAuthenticated(t, config, macros, expectedField, "Authentication-Results field added")
 }
 
-func testMacros(t *testing.T, config string, macros []string, expectedField string, expectedOut ...string) {
+func subTestAuthenticated(t *testing.T, config string, macros []string, expectedField string, expectedOut ...string) {
 	if len(macros)%2 != 0 {
 		panic("macros varargs must be pairs")
 	}
@@ -230,8 +230,35 @@ skiplog:
 	}
 }
 
-func TestUnAuthenticatedClient(t *testing.T) {
-	config := `ListenURI = "tcp://127.0.0.1:"`
+func TestUnauthenticated(t *testing.T) {
+	cases := []struct {
+		name   string
+		macros []string
+	}{
+		{
+			name:   "no macro",
+			macros: []string{},
+		},
+		{
+			name:   "client ip not local",
+			macros: []string{"{client_addr}", "132.227.1.7"},
+		},
+	}
+	config := `
+ListenURI = "tcp://127.0.0.1:"
+AuthservID = "mail.club1.fr"
+`
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			subTestUnauthenticated(t, config, c.macros)
+		})
+	}
+}
+
+func subTestUnauthenticated(t *testing.T, config string, macros []string) {
+	if len(macros)%2 != 0 {
+		panic("macros varargs must be pairs")
+	}
 	network, address, out := setup(t, config)
 
 	client := milter.NewClientWithOptions(network, address, milter.ClientOptions{
@@ -243,6 +270,13 @@ func TestUnAuthenticatedClient(t *testing.T) {
 		t.Fatal("unexpected error: ", err)
 	}
 	defer session.Close()
+
+	err = session.Macros(milter.CodeMail,
+		append(macros, "i", "QUEUEID")...,
+	)
+	if err != nil {
+		t.Fatal("unexpected err setting macros: ", err)
+	}
 
 	res, err := session.Mail("nicolas@example.fr", []string{})
 	if err != nil {
