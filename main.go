@@ -150,7 +150,7 @@ func main() {
 		NewMilter: func() milter.Milter {
 			return &Session{}
 		},
-		Actions:  milter.OptSetSymList,
+		Actions:  milter.OptAddHeader | milter.OptSetSymList,
 		Protocol: milter.OptNoConnect | milter.OptNoHelo | milter.OptNoRcptTo | milter.OptNoHeaders | milter.OptNoBody,
 		SymList: map[milter.Stage][]string{
 			milter.StageMailFrom: {"i", "{auth_authen}", "{client_addr}"},
